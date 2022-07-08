@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vue Basics</title>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://unpkg.com/vue@next" defer></script>
+  <script src="app.js" defer></script>
+</head>
+
+<body>
+  <header>
+    <h1>Monster Slayer</h1>
+  </header>
+  <div id="game">
+    <section id="monster" class="container glass">
+      <img class="character-img" :class="{'rotate-monster': winner === 'player'}" src="./img/mosquito.png" alt="">
+
+      <div class="hp">
+        <h2>Monster Health</h2>
+        <span id="monster-hp">{{ monsterHealth }}</span>
+      </div>
+
+      <div class="healthbar">
+        <div class="healthbar__value" :style="[monsterBarStyles, barColor(monsterHealth)]"></div>
+      </div>
+    </section>
+    <section id="player" class="container glass">
+      <img class="character-img" :class="{'rotate-player': winner === 'monster'}" src="./img/knight.png" alt="">
+
+      <div class="hp">
+        <h2>Your Health</h2>
+        <span id="player-hp">{{ playerHealth }}</span>
+      </div>
+
+      <div class="healthbar">
+        <div class="healthbar__value" :style="[playerBarStyles, barColor(playerHealth)]"></div>
+      </div>
+    </section>
+
+    <section class="container glass" v-if="winner">
+      <h2>Game Over!</h2>
+      <h3 v-if="winner === 'monster'">You lost!</h3>
+      <h3 v-else-if="winner === 'player'">You won!</h3>
+      <h3 v-else="winner === 'draw'">It's a draw!</h3>
+      <button @click="newGame">Play Again!</button>
+    </section>
+
+    <section id="controls" v-if="!winner">
+      <div class="fight"><img class="fight-icons" src="./img/sword.png" alt=""> <button
+          @click="attackMonster">ATTACK</button></div>
+      <div class="fight"><img class="fight-icons" src="./img/cannon.png" alt=""> <button @click="specialAttack"
+          :disabled="mayUseSpecialAttack">SPECIAL
+          ATTACK</button></div>
+      <div class="fight"><img class="fight-icons" src="./img/potion.png" alt=""> <button
+          @click="healPlayer">HEAL</button></div>
+      <div class="fight"><img class="fight-icons" src="./img/white-flag.png" alt=""> <button
+          @click="surrender">SURRENDER</button>
+      </div>
+    </section>
+
+    <section id="log" class="container glass">
+      <h2>Battle Log</h2>
+      <ul>
+        <li v-for="logMessage in logMessages">
+          <span
+            :class="{'log--player': logMessage.actionBy === 'player', 'log--monster': logMessage.actionBy === 'monster'}">{{
+            logMessage.actionBy }}</span>
+          <span v-if="logMessage.actionType === 'heal'"> heals himself for <span class=" log--heal">{{
+              logMessage.actionValue }}</span></span>
+          <span v-else="logMessage.actionType === 'attack'"> attacks and deals <span class=" log--damage">{{
+              logMessage.actionValue }} </span> damage</span>
+        </li>
+      </ul>
+    </section>
+  </div>
+</body>
+
+</html>
